@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My map</title>
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <style> body { margin: 0; } 
+		#legend { position: absolute; left: 10px; bottom: 30px;
+			width: 220px; padding: 8px; background: white;  z-index: 10; }
+		#legend p { font-size: 11px; margin: 6px 0 0; } 
+		#map { position: absolute; inset: 0; } 
+		
+	.bike-lane { 
+		display: inline-block;
+		width: 10px;
+		border-top: 3px solid #EADF0F
+	} 
+		
+	.park { 
+		display: inline-block; 
+		width: 10px; 
+		height: 10px; 
+		background: #1E8425
+	} 
+	
+	.community-centre { 
+		display: inline-block; 
+		width: 10px; 
+		height: 10px; 
+		background: #4063C9; 
+		border radius: 50%
+	} 
+	</style>
+</head>
+<body>
+  <div id = "map"></div>
+  <div id="legend">Features
+	<p><span class = "bike-lane"></span> Bike Lane </p> 
+	<p><span class = "park"></span> Park </p> 
+	<p><span class = "community-centre"></span> Community Centre </p> 
+	<p>Data: City of Vancouver, Open Data Portal, parks, community centres, bikeways. The contour lines
+		on the map are also from the City of Vancouver open data portal and represent 2 metre changes
+		in elevation. Accessed 2026.</p>
+	</div> 
+  
+  <script>
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: 'chase472_exploratorylab1.json',        // the file you downloaded from Maputnik
+      center: [-123.11403194695777, 49.24342368470469],    // longitude, latitude
+      zoom: 11
+    });
+    map.addControl(new maplibregl.NavigationControl());
+
+map.on('click', 'vancouver_parks_fill', function (e) { 
+	const park = e.features[0].properties;
+	
+	const name = park.park_name; 
+
+	if (name) { 
+		new maplibregl.Popup() 
+		.setLngLat(e.lngLat) 
+		.setText(name) 
+		.addTo(map); 
+	} 
+}); 
+		
+map.on('click', 'community_centres_circle', function(e) { 
+	const centre = e.features[0].properties; 
+	
+	const centre_name = centre.name; 
+	
+	if (centre_name) { 
+		new maplibregl.Popup() 
+		.setLngLat(e.lngLat) 
+		.setText(centre_name) 
+		.addTo(map); 
+	} 
+}); 
+		
+  </script>
+
+</html> 
